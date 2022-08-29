@@ -12,6 +12,7 @@ import {
   StartCountdownButton,
   TaskInput,
 } from './styles'
+import { useState } from 'react'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informa a tarefa'),
@@ -23,7 +24,16 @@ const newCycleFormValidationSchema = zod.object({
 
 type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
+interface Cycle {
+  id: string
+  task: string
+  minutesAmount: number
+}
+
 export const Home = () => {
+  const [cycles, setCycles] = useState<Cycle[]>([])
+  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+
   const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
@@ -33,10 +43,26 @@ export const Home = () => {
   })
 
   const handleCreateNewCycle = (data: NewCycleFormData) => {
-    console.log(data)
+    const { task, minutesAmount } = data
+    const id = String(new Date().getTime())
+
+    const newCycle: Cycle = {
+      id,
+      task,
+      minutesAmount,
+    }
+
+    setCycles((state) => [...state, newCycle])
+    setActiveCycleId(id)
     // reset the values to the values we defined at `defaultValues`
     reset()
   }
+
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  console.log(
+    '🚀 ~ file: index.tsx ~ line 62 ~ Home ~ activeCycle',
+    activeCycle,
+  )
 
   const task = watch('task')
   const isSubmitDisabled = !task

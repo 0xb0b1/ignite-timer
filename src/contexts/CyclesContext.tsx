@@ -45,24 +45,33 @@ export function CyclesContextProvider({
   }
 
   function markCurrentCycleAsFinished() {
+    // setCycles((state) =>
+    //   state.map((cycle) => {
+    //     if (cycle.id === activeCycleId) {
+    //       return { ...cycle, finishedDate: new Date() }
+    //     } else {
+    //       return cycle
+    //     }
+    //   }),
+    // )
+
     setCycles((state) =>
-      state.map((cycle) => {
-        if (cycle.id === activeCycleId) {
-          return { ...cycle, finishedDate: new Date() }
-        } else {
-          return cycle
-        }
-      }),
+      state.map((cycle) =>
+        cycle.id === activeCycleId
+          ? { ...cycle, finishedDate: new Date() }
+          : cycle,
+      ),
     )
   }
 
   function createNewCycle(data: CreateCycleData) {
     const id = String(new Date().getTime())
+    const { task, minutesAmount } = data
 
     const newCycle: Cycle = {
       id,
-      task: data.task,
-      minutesAmount: data.minutesAmount,
+      task,
+      minutesAmount,
       startDate: new Date(),
     }
 
@@ -72,14 +81,22 @@ export function CyclesContextProvider({
   }
 
   function interruptCurrentCycle() {
+    // setCycles((state) =>
+    //   state.map((cycle) => {
+    //     if (cycle.id === activeCycleId) {
+    //       return { ...cycle, interruptedDate: new Date() }
+    //     } else {
+    //       return cycle
+    //     }
+    //   }),
+    // )
+
     setCycles((state) =>
-      state.map((cycle) => {
-        if (cycle.id === activeCycleId) {
-          return { ...cycle, interruptedDate: new Date() }
-        } else {
-          return cycle
-        }
-      }),
+      state.map((cycle) =>
+        cycle.id === activeCycleId
+          ? { ...cycle, interruptedDate: new Date() }
+          : cycle,
+      ),
     )
     setActiveCycleId(null)
   }
